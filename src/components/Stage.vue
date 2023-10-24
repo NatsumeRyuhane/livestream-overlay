@@ -7,10 +7,11 @@
 
 <style scoped lang="scss">
     @import '../style.scss';
+    $container-height: 838px;
 
     .container {
-        width: 1491px;
-        height: 838px;
+        width: calc($container-height * $stage-aspect-ratio-Width2Height);
+        height: $container-height;
 
         background-color: $stage-background;
     }
