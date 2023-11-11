@@ -57,6 +57,8 @@
     position: absolute;
     left: 26px;
     top: 125px;
+
+    box-shadow: 0 0 8px #D1D2D3;
   }
 
   #footer {

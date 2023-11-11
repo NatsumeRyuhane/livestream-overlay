@@ -6,7 +6,9 @@
     import InfoBlock from "./header_components/InfoBlock.vue"
 
     let infoblocks = ref([
-        { id: 1, blockTitle: "主包今天玩什么", blockContent: "木子猫猫" }
+        { id: 1, blockTitle: "小毛龙今天玩什么", blockContent: "不知道" },
+        { id: 2, blockTitle: "粉丝&舰长群", blockContent: "ないです" },
+        { id: 1, blockTitle: "今日直播目标", blockContent: "活着下播" },
     ]);
 
     function addInfoBlock() {
