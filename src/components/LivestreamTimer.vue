@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { ref } from 'vue'
+    import { ref, Ref } from 'vue'
 
     var hours_elapsed = ref("??")
     var minutes_elapsed = ref("??")
@@ -7,6 +7,7 @@
     var frames_elapsed = ref("??")
 
     var livestream_start: Date = new Date();
+    var isBlinking: Ref<boolean> = ref(false);
 
     setInterval(function(): void {
         let now: Date = new Date();
@@ -27,14 +28,28 @@
         seconds_elapsed.value = (second_elapsed >= 10 ? second_elapsed.toString() : "0" + second_elapsed.toString());
         frames_elapsed.value = (frame_elapsed >= 10 ? frame_elapsed.toString() : "0" + frame_elapsed.toString());
 
-    }, 5)
+    }, 5);
+
+    function resetLivestreamTimer() {
+        startBlinking();
+        setTimeout(() => {
+            livestream_start = new Date();
+        }, 100);
+    }
+
+    function startBlinking() {
+        isBlinking.value = true;
+        setTimeout(() => {
+            isBlinking.value = false;
+        }, 200);
+    }
 </script>
 
 <template>
     <div id="wrapper">
-        <div id="container">
-            <div id="time">
-                <div id="hms">
+        <div id="container" @click="resetLivestreamTimer">
+            <div id="time" ref="timer">
+                <div id="hms" :class="{ blinking: isBlinking }">
                     <p id="time-display-hr" class="time-number">{{ hours_elapsed }}</p>
                     <p class="time-seperator">:</p>
                     <p id="time-display-min" class="time-number">{{ minutes_elapsed }}</p>
@@ -89,6 +104,22 @@
         font-weight: 500;
 
         justify-content: start;
+
+        &.blinking {
+            animation: blink 0.2s 2 normal ease-in-out;
+        }
+
+        @keyframes blink {
+            0% {
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
     }
 
     .time-display .time-number {

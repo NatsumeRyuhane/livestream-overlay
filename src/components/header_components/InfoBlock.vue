@@ -4,14 +4,21 @@
         title: String,
         content: String
     });
+
+    function preventNewline(event: KeyboardEvent) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            (event.target as HTMLElement).blur();
+        }
+    }
 </script>
 
 <template>
   <div class="info">
         <div class="decorator" />
         <div class="info-content-wrapper">
-            <p class="info-title" contenteditable="true">{{ title }}</p>
-            <p class="info-content" contenteditable="true">{{ content }}</p>
+            <p class="info-title" contenteditable="true" @keydown="preventNewline">{{ title }}</p>
+            <p class="info-content" contenteditable="true" @keydown="preventNewline">{{ content }}</p>
         </div>
     </div>
 </template>
