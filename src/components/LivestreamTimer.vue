@@ -34,7 +34,7 @@
         startBlinking();
         setTimeout(() => {
             livestream_start = new Date();
-        }, 100);
+        }, 50);
     }
 
     function startBlinking() {
@@ -106,17 +106,20 @@
         justify-content: start;
 
         &.blinking {
-            animation: blink 0.2s 2 normal ease-in-out;
+            animation: blink 0.4s 1 normal ease-in-out;
         }
 
         @keyframes blink {
             0% {
                 opacity: 0;
             }
-            50% {
+            25% {
                 opacity: 1;
             }
-            100% {
+            50% {
+                opacity: 0;
+            }
+            75% {
                 opacity: 1;
             }
         }

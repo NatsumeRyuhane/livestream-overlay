@@ -1,21 +1,46 @@
 <script setup lang="ts">
-    defineProps({
-        id: Number,
-        title: String,
-        content: String
-    });
+import { onMounted, Ref, ref, defineEmits } from "vue";
 
-    function preventNewline(event: KeyboardEvent) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            (event.target as HTMLElement).blur();
-        }
+const props = defineProps({
+    id: Number,
+    title: String,
+    content: String
+});
+
+const emit = defineEmits({
+    "BlockRemoval": (payload: number) => true
+});
+
+const decorator: Ref<null | HTMLDivElement> = ref(null);
+const decoratorWrapper: Ref<null | HTMLDivElement> = ref(null);
+
+function preventNewline(event: KeyboardEvent) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        (event.target as HTMLElement).blur();
     }
+}
+
+onMounted(() => {
+    decoratorWrapper.value?.addEventListener("mouseenter", () => {
+        decorator.value?.classList.add("expanded");
+    });
+    decoratorWrapper.value?.addEventListener("mouseleave", () => {
+        decorator.value?.classList.remove("expanded");
+    });
+    decoratorWrapper.value?.addEventListener("click", () => {
+        if (props.id) {
+            emit("BlockRemoval", props.id);
+        }
+    });
+})
 </script>
 
 <template>
   <div class="info">
-        <div class="decorator" />
+        <div class="decorator-wrapper" ref="decoratorWrapper">
+            <div class="decorator" ref="decorator"/>
+        </div>
         <div class="info-content-wrapper">
             <p class="info-title" contenteditable="true" @keydown="preventNewline">{{ title }}</p>
             <p class="info-content" contenteditable="true" @keydown="preventNewline">{{ content }}</p>
@@ -27,7 +52,7 @@
     @import '../../style.scss';
 
     [contenteditable] {
-        outline: 0px solid transparent;
+        outline: 0 solid transparent;
     }
 
     p {
@@ -47,11 +72,21 @@
         white-space: nowrap;
     }
 
+    .decorator-wrapper {
+        width: 20px;
+        height: 100%;
+    }
+
     .decorator {
         height: 6px;
         width: 20px;
 
         background-color: $primary-accent-color;
+        transition: all 0.2s ease;
+
+        &.expanded {
+            height: 100%;
+        }
     }
 
     .info-content-wrapper {
