@@ -55,7 +55,7 @@
 
   #main-stage {
     position: absolute;
-    left: 26px;
+    right: 26px;
     top: 125px;
 
     box-shadow: 0 0 8px #D1D2D3;
@@ -74,7 +74,7 @@
     height: 500px;
 
     top: 125px;
-    left: 1392px;
+    right: 1392px;
   }
 
   #copyright {

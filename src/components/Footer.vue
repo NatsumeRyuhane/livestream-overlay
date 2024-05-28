@@ -37,6 +37,14 @@ setInterval(function (): void {
 
 <template>
     <div class="container">
+        <div id="deco-end" />
+
+        <div id="footer-texts-wrapper">
+            <Transition>
+                <p id="footer-texts" v-if="showFooterTexts">{{ footerText }}</p>
+            </Transition>
+        </div>
+
         <div id="title-area">
             <img
                 id="title-area-deco-img"
@@ -45,14 +53,6 @@ setInterval(function (): void {
             <p id="title-area-deco">XML<br />NEWS</p>
             <img id="title-area-globe" src="../assets/globe.png"/>
         </div>
-
-        <div id="footer-texts-wrapper">
-            <Transition>
-                <p id="footer-texts" v-if="showFooterTexts">{{ footerText }}</p>
-            </Transition>
-        </div>
-
-        <div id="deco-end" />
     </div>
 </template>
 
@@ -68,9 +68,9 @@ setInterval(function (): void {
 
 #title-area {
     font-family: outfit;
-    position: relative;
+    position: absolute;
     top: 0;
-    left: 0;
+    right: 0;
     width: 286.5px;
     height: 93.75px;
 
@@ -109,7 +109,7 @@ setInterval(function (): void {
     color: white;
 
     position: absolute;
-    left: 286.5px;
+    left: 0;
     top: 0;
     width: calc(100% - 286.5px);
     height: 100%;
@@ -120,8 +120,6 @@ setInterval(function (): void {
     flex-direction: row;
     align-items: center;
     justify-content: start;
-
-    overflow-x: hidden;
 
     z-index: 11;
 }
@@ -138,7 +136,7 @@ setInterval(function (): void {
 
 #deco-end {
     position: absolute;
-    right: 0;
+    right: 286.5px;
     top: 0;
 
     width: 879px;

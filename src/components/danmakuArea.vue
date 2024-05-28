@@ -37,6 +37,7 @@
     .danmaku-container {
         position: relative;
         background-color: hsla($primary-accent-color-H, $primary-accent-color-S, $primary-accent-color-L, 0.03);
+        backdrop-filter: blur(4px);
 
         width: 100%;
         height: 100%;

@@ -2,7 +2,7 @@ $primary-accent-color-H:    200;
 $primary-accent-color-S:    100;
 $primary-accent-color-L:    47.6;
 
-$primary-accent-color-H-coefficient: 1.1;
+$primary-accent-color-H-coefficient: 1.1355;
 $primary-accent-color: hsl($primary-accent-color-H * 1deg, $primary-accent-color-S * 1%, $primary-accent-color-L * 1%);
 
 $secondary-accent-color-H:  0;
