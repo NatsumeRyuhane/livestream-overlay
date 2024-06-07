@@ -79,16 +79,16 @@
 
   #copyright {
     @include flex-vertical;
-    align-items: end;
+    align-items: start;
 
     width: fit-content;
     height: fit-content;
 
     position: absolute;
-    right: 0.5em;
+    left: 0.5em;
     bottom: 94px;
     
-    font-family: MiSans;
+    font-family: MiSans,sans-serif;
     color: $secondary-accent-color;
     font-style: italic;
 

@@ -51,9 +51,9 @@
             <div id="time" ref="timer">
                 <div id="hms" :class="{ blinking: isBlinking }">
                     <p id="time-display-hr" class="time-number">{{ hours_elapsed }}</p>
-                    <p class="time-seperator">:</p>
+                    <p class="time-separator">:</p>
                     <p id="time-display-min" class="time-number">{{ minutes_elapsed }}</p>
-                    <p class="time-seperator">:</p>
+                    <p class="time-separator">:</p>
                     <p id="time-display-sec" class="time-number">{{ seconds_elapsed }}</p>
                     <p id="time-display-frame" class="time-number">{{ frames_elapsed }}</p>
                 </div>
@@ -97,7 +97,7 @@
         @include flex-horizontal; 
         width: 100%;
 
-        font-family: outfit;
+        font-family: outfit, sans-serif;
         color: $clock-accent-color;
 
         font-size: 18px;
@@ -132,7 +132,7 @@
         justify-content: center;
     }
 
-    .time-seperator, .date-seperator {
+    .time-separator, .date-separator {
         position: relative;
         top: -0.125em;
         margin: 0 0.1em;
@@ -156,7 +156,7 @@
 
     #clock-prompt {
         background-color: $clock-accent-color;
-        font-family: outfit;
+        font-family: outfit, sans-serif;
         color: white;
         box-sizing: border-box;
         padding: 0 .25em;

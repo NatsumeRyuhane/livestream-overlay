@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick, onMounted, ref, Ref } from "vue";
+import { onMounted, ref, Ref } from "vue";
 
 import Clock from "./Clock.vue"
 import LivestreamTimer from './LivestreamTimer.vue';
@@ -21,9 +21,8 @@ let infoblocks: Ref<InfoBlock[]> = ref([]);
 let nextInfoBlockID: number = 0;
 
 let presetInfoBlocks = [
-    { blockTitle: "小毛龙今天玩什么", blockContent: "不知道" },
-    { blockTitle: "粉丝&舰长群", blockContent: "ないです" },
     { blockTitle: "今日直播目标", blockContent: "活着下播" },
+    { blockTitle: "直播群", blockContent: "670415161" },
 ]
 
 function addInfoBlock(infoBlockData: null | InfoBlockContent) {
@@ -40,8 +39,6 @@ function addInfoBlock(infoBlockData: null | InfoBlockContent) {
 }
 
 function removeInfoBlock(id: number) {
-    // FIXME: This function does work as expected
-    // as for now, it seems that its always removing the last element
     console.log(id)
     infoblocks.value = infoblocks.value.filter((ib) => ib.id !== id);
 }
@@ -61,7 +58,8 @@ onMounted(() => {
             </div>
 
             <LivestreamTimer id="livestream-timer" />
-            <Clock id="clock" />
+            <Clock id="clock" label="LOCAL TIME" />
+            <Clock id="clock-cn" timezone="Asia/Shanghai" label="CN TIME"/>
             
             <div id="infoblocks">
                 <InfoBlock v-for="ib in infoblocks" :id="ib.id" :title="ib.blockTitle" :content="ib.blockContent" @BlockRemoval="removeInfoBlock"/>
@@ -76,7 +74,7 @@ onMounted(() => {
     @import '../style.scss';
 
     * {
-        font-family: SourceHanSerifSC;
+        font-family: SourceHanSerifSC, serif;
         color: rgb(50, 50, 50);
     }
 
@@ -85,7 +83,7 @@ onMounted(() => {
         left: 181px;
         bottom: -76px;
 
-        font-family: Abuget;
+        font-family: Abuget, sans-serif;
         font-size: 70px;
         color: $primary-accent-color;
 
@@ -95,6 +93,7 @@ onMounted(() => {
 
     #livestream-timer {
         margin-left: 2rem;
+        margin-right: 1rem;
         align-items: end;
         padding: 0;
         flex-shrink: 0;
@@ -103,8 +102,8 @@ onMounted(() => {
         height: 100%;
     }
 
-    #clock {
-        margin-left: 1rem;
+    #clock, #clock-cn {
+        margin-left: 0.5rem;
         align-items: end;
         padding: 0;
         flex-shrink: 0;
@@ -177,7 +176,7 @@ onMounted(() => {
         border: 1px solid lighten($secondary-accent-color, 50%);
 
         color:  lighten($secondary-accent-color, 50%);
-        font-family: outfit;
+        font-family: outfit, sans-serif;
         font-size: 20px;
         font-weight: 500;
 

@@ -39,7 +39,7 @@ setInterval(function (): void {
     <div class="container">
         <div id="deco-end" />
 
-        <div id="footer-texts-wrapper">
+<!--        <div id="footer-texts-wrapper">
             <Transition>
                 <p id="footer-texts" v-if="showFooterTexts">{{ footerText }}</p>
             </Transition>
@@ -52,7 +52,7 @@ setInterval(function (): void {
             />
             <p id="title-area-deco">XML<br />NEWS</p>
             <img id="title-area-globe" src="../assets/globe.png"/>
-        </div>
+        </div>-->
     </div>
 </template>
 
@@ -67,7 +67,7 @@ setInterval(function (): void {
 }
 
 #title-area {
-    font-family: outfit;
+    font-family: outfit, sans-serif;
     position: absolute;
     top: 0;
     right: 0;
@@ -129,14 +129,15 @@ setInterval(function (): void {
     font-size: 30px;
     text-wrap: nowrap;
     white-space: nowrap;
-    font-family: MiSans;
+    font-family: MiSans, sans-serif;
 
     z-index: 10;
 }
 
 #deco-end {
     position: absolute;
-    right: 286.5px;
+    //right: 286.5px;
+    right: 0;
     top: 0;
 
     width: 879px;
