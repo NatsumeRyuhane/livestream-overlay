@@ -60,7 +60,7 @@ setInterval(function (): void {
 @import "../style.scss";
 
 .container {
-    position: absolute;
+    position: relative;
     height: 100%;
     width: 100%;
     background-color: $secondary-accent-color;

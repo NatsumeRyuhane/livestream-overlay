@@ -7,9 +7,7 @@ const props = defineProps({
     content: String
 });
 
-const emit = defineEmits({
-    "BlockRemoval": (payload: number) => true
-});
+const emits = defineEmits(["BlockRemoval"]);
 
 const decorator: Ref<null | HTMLDivElement> = ref(null);
 const decoratorWrapper: Ref<null | HTMLDivElement> = ref(null);
@@ -30,7 +28,7 @@ onMounted(() => {
     });
     decoratorWrapper.value?.addEventListener("click", () => {
         if (props.id) {
-            emit("BlockRemoval", props.id);
+            emits("BlockRemoval", props.id);
         }
     });
 })

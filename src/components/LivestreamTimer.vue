@@ -80,6 +80,7 @@
         justify-content: end;
 
         height: 100%;
+        user-select: none;
     }
 
     #time {

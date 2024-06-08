@@ -5,6 +5,8 @@ import Clock from "./Clock.vue"
 import LivestreamTimer from './LivestreamTimer.vue';
 import InfoBlock from "./header_components/InfoBlock.vue"
 
+const emits = defineEmits(["SwitchLayout"]);
+
 interface InfoBlock {
     id: number;
     blockTitle: string;
@@ -51,7 +53,7 @@ onMounted(() => {
 <template>
     <div class="wrapper">
         <div class="container">
-            <div id="deco" />
+            <div id="deco" @click="$emit('SwitchLayout')"/>
             <div id="live-streaming-prompt">
                 <h1>直播进行中</h1>
                 <p id="LIVE-STREAMING">live streaming</p>
@@ -62,7 +64,7 @@ onMounted(() => {
             <Clock id="clock-cn" timezone="Asia/Shanghai" label="CN TIME"/>
             
             <div id="infoblocks">
-                <InfoBlock v-for="ib in infoblocks" :id="ib.id" :title="ib.blockTitle" :content="ib.blockContent" @BlockRemoval="removeInfoBlock"/>
+                <InfoBlock v-for="ib in infoblocks" :id="ib.id" :title="ib.blockTitle" :content="ib.blockContent" @BlockRemoval="removeInfoBlock" />
             </div>
 
             <button id="btn-add-infoblock" ref="btn-Add-Infoblock" @click="addInfoBlock(null);">+</button>
@@ -78,10 +80,16 @@ onMounted(() => {
         color: rgb(50, 50, 50);
     }
 
+    #live-streaming-prompt {
+        position: relative;
+        white-space: nowrap;
+        user-select: none;
+    }
+
     #LIVE-STREAMING {
         position: absolute;
-        left: 181px;
-        bottom: -76px;
+        left: 80px;
+        bottom: -66px;
 
         font-family: Abuget, sans-serif;
         font-size: 70px;
@@ -96,7 +104,6 @@ onMounted(() => {
         margin-right: 1rem;
         align-items: end;
         padding: 0;
-        flex-shrink: 0;
 
         align-self: end;
         height: 100%;
@@ -143,6 +150,11 @@ onMounted(() => {
 
         margin-right: 1em;
         flex-shrink: 0;
+    }
+
+    #deco:hover {
+        cursor: pointer;
+        background-color: lighten($primary-accent-color, 10%);
     }
 
     #infoblocks {

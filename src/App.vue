@@ -1,37 +1,51 @@
-<script setup lang="ts">
-  import LivestreamHeader from "./components/Header.vue"
-  import Stage from "./components/Stage.vue"
-  import LivestreamFooter from "./components/Footer.vue"
-  import DanmakuArea from "./components/danmakuArea.vue"; 
+<script lang="ts" setup>
+import LivestreamHeader from "./components/Header.vue";
+import LivestreamFooter from "./components/Footer.vue";
+import DefaultLayout from "./layouts/DefaultLayout.vue";
+import { ref } from "vue";
+import NoStageLayout from "./layouts/NoStageLayout.vue";
+
+let layouts = [
+    ref("default-layout"),
+    ref("no-stage-layout")
+];
+
+let activeLayout = ref(0);
+
+function switchLayout() {
+    activeLayout.value += 1;
+    if (activeLayout.value == layouts.length) {
+        activeLayout.value = 0;
+    }
+}
 </script>
 
 <template>
-  <div id="app-container">
-    <LivestreamHeader id="header" />
-    <Stage id="main-stage" />
-    <LivestreamFooter id="footer" />
-    <DanmakuArea id="danmaku" />
-
-    <div id="copyright">
-      <p>Designed by @木子猫</p>
-      <p>Made with Vue by @夏目龙羽</p>
+    <div id="app-container">
+        <LivestreamHeader id="header" @SwitchLayout="switchLayout"/>
+        <div id="layout-container">
+            <DefaultLayout v-if="activeLayout === 0"/>
+            <NoStageLayout v-if="activeLayout === 1"/>
+        </div>
+        <LivestreamFooter id="footer" />
     </div>
-  </div>
 </template>
 
 <style lang="scss">
-  @import "style.scss";
+@import "style.scss";
 
-  body {
+body {
     width: 1920px;
     height: 1080px;
     margin: 0;
-    
-    background: transparent;
-  }
 
-  #app-container {
+    background: transparent;
+}
+
+#app-container {
     position: absolute;
+    top: 0;
+    left: 0;
     width: 1920px;
     height: 1080px;
 
@@ -39,63 +53,29 @@
     background-size: cover;
 
     overflow: hidden;
-  }
 
-  #header {
-    position: absolute;
-    left: 0;
-    top: 0;
+    @include flex-vertical;
+}
 
+#header {
     width: 100%;
     height: 125px;
     box-sizing: border-box;
 
     overflow: hidden;
-  }
+}
 
-  #main-stage {
-    position: absolute;
-    right: 26px;
-    top: 125px;
+#layout-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
 
-    box-shadow: 0 0 8px #D1D2D3;
-  }
+    flex-grow: 1;
+}
 
-  #footer {
-    position: absolute;
-    left: 0;
-    bottom: 0;
 
+#footer {
+    width: 100%;
     height: 93.75px;
-  }
-
-  #danmaku {
-    width: 500px;
-    height: 500px;
-
-    top: 125px;
-    right: 1392px;
-  }
-
-  #copyright {
-    @include flex-vertical;
-    align-items: start;
-
-    width: fit-content;
-    height: fit-content;
-
-    position: absolute;
-    left: 0.5em;
-    bottom: 94px;
-    
-    font-family: MiSans,sans-serif;
-    color: $secondary-accent-color;
-    font-style: italic;
-
-    opacity: 0.3;
-  }
-
-  #copyright p {
-    margin: 0;
-  }
+}
 </style>

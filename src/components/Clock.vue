@@ -95,6 +95,7 @@
         overflow: hidden;
 
         height: 100%;
+        user-select: none;
     }
 
     #time {

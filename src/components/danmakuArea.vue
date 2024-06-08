@@ -21,6 +21,7 @@
         height: 100%;
         
         position: absolute;
+        user-select: none;
     }
 
     h1 {
