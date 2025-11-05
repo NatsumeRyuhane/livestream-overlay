@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'SourceHanSansCN';
+  src: url('/fonts/SourceHanSansCN/SourceHanSansCN-Regular.otf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MiSans';
+  src: url('/fonts/MiSans/MiSans-Regular.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Abuget';
+  src: url('/fonts/Abuget.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('/fonts/Outfit-VariableFont_wght.ttf');
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'SourceHanSerifSC';
+  src: url('/fonts/SourceHanSerifSC/SourceHanSerifSC-Heavy.otf');
+  font-weight: 900;
+  font-style: normal;
+}
+
+@layer base {
+  body {
+    @apply w-[1920px] h-[1080px] m-0 bg-transparent;
+  }
+}
+
+@layer utilities {
+  .flex-horizontal {
+    @apply flex flex-row items-center justify-start;
+  }
+
+  .flex-vertical {
+    @apply flex flex-col items-center justify-start;
+  }
+}
