@@ -19,6 +19,9 @@ build/
 *.tsbuildinfo
 next-env.d.ts
 
+# Data
+data/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

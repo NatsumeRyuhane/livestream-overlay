@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Clock from './Clock';
 import LivestreamTimer from './LivestreamTimer';
 import InfoBlock from './InfoBlock';
+import { HeaderConfig } from '@/types/profile';
 
 interface InfoBlockData {
   id: number;
@@ -12,21 +13,28 @@ interface InfoBlockData {
 }
 
 interface HeaderProps {
+  config?: HeaderConfig;
   onSwitchLayout: () => void;
+  onInfoBlocksUpdate?: (infoblocks: InfoBlockData[]) => void;
 }
 
-export default function Header({ onSwitchLayout }: HeaderProps) {
-  const [infoblocks, setInfoblocks] = useState<InfoBlockData[]>([]);
-  const [nextInfoBlockID, setNextInfoBlockID] = useState(0);
+export default function Header({ config, onSwitchLayout, onInfoBlocksUpdate }: HeaderProps) {
+  const [infoblocks, setInfoblocks] = useState<InfoBlockData[]>(
+    config?.infoblocks || [
+      { id: 1, blockTitle: "今日直播目标", blockContent: "活着下播" },
+      { id: 2, blockTitle: "直播群", blockContent: "670415161" },
+    ]
+  );
+  const [nextInfoBlockID, setNextInfoBlockID] = useState(
+    Math.max(0, ...(config?.infoblocks.map(ib => ib.id) || [0]))
+  );
 
-  const presetInfoBlocks = [
-    { blockTitle: "今日直播目标", blockContent: "活着下播" },
-    { blockTitle: "直播群", blockContent: "670415161" },
-  ];
-
+  // Sync infoblocks to parent when they change
   useEffect(() => {
-    presetInfoBlocks.forEach((ib) => addInfoBlock(ib));
-  }, []);
+    if (onInfoBlocksUpdate) {
+      onInfoBlocksUpdate(infoblocks);
+    }
+  }, [infoblocks, onInfoBlocksUpdate]);
 
   const addInfoBlock = (infoBlockData?: { blockTitle: string; blockContent: string } | null) => {
     setNextInfoBlockID((prevId) => {
