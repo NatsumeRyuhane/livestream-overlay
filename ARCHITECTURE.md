@@ -26,15 +26,21 @@ Two built-in layouts:
 - **DefaultLayout**: Includes stage and danmaku area
 - **NoStageLayout**: Danmaku area only
 
-### 4. Real-time Sync
-- Client-side changes automatically sync to server
-- Layout switches persist across sessions
-- Info block changes are saved immediately
+### 4. Real-time Sync (WebSocket)
+- **True real-time synchronization** using Socket.IO
+- Client-side changes broadcast to all connected clients instantly
+- Layout switches visible across all viewing instances
+- Info block changes propagate in real-time
+- Automatic reconnection with exponential backoff
+- Room-based architecture (one room per profile)
+- HTTP fallback for degraded connections
+- Visual connection status indicator
 
 ## Architecture
 
 ```
 livestream-overlay/
+├── server.ts                   # Custom Node.js server with Socket.IO
 ├── app/
 │   ├── api/                    # API routes
 │   │   └── profiles/
@@ -45,7 +51,8 @@ livestream-overlay/
 │   │               └── route.ts # Update config only
 │   ├── overlay/                # Overlay renderer
 │   │   └── [id]/
-│   │       └── page.tsx        # Dynamic overlay page
+│   │       ├── page.tsx        # Dynamic overlay page (server)
+│   │       └── ClientWrapper.tsx # Client-side wrapper
 │   ├── page.tsx                # Dashboard/admin UI
 │   ├── layout.tsx              # Root layout
 │   └── globals.css             # Global styles
@@ -62,7 +69,8 @@ livestream-overlay/
 │   └── OverlayRenderer.tsx     # Main renderer
 ├── lib/
 │   ├── profileStorage.ts       # File-based storage
-│   └── profileContext.tsx      # React context for profiles
+│   ├── profileContext.tsx      # React context for profiles
+│   └── socketContext.tsx       # WebSocket context & connection
 ├── types/
 │   └── profile.ts              # TypeScript types
 ├── data/
@@ -243,21 +251,84 @@ Replace `lib/profileStorage.ts` with your own implementation:
 
 Just maintain the same function signatures for compatibility.
 
+## WebSocket Real-time Sync
+
+The system uses Socket.IO for real-time bidirectional communication.
+
+### Server-side (server.ts)
+
+The custom Node.js server wraps Next.js and adds Socket.IO:
+
+```typescript
+// Key events handled:
+- 'join-profile': Client joins a profile room
+- 'leave-profile': Client leaves a profile room
+- 'update-config': Client sends config update
+- 'config-updated': Broadcast to other clients in room
+- 'update-success': Acknowledgment to sender
+- 'update-error': Error notification
+```
+
+### Client-side (lib/socketContext.tsx)
+
+Manages WebSocket connection and provides hooks:
+
+```typescript
+const {
+  isConnected,      // Connection status
+  joinProfile,      // Join a profile room
+  leaveProfile,     // Leave a profile room
+  updateConfig,     // Send config update
+  onConfigUpdated,  // Listen for updates
+} = useSocket();
+```
+
+### Connection Flow
+
+1. Client loads overlay page
+2. SocketProvider initializes connection
+3. ProfileProvider joins profile-specific room
+4. Changes broadcast to all clients in same room
+5. Automatic reconnection on disconnect
+
+### Features
+
+- **Rooms**: Each profile has its own Socket.IO room (`profile:{id}`)
+- **Reconnection**: Exponential backoff (1s, 2s, 4s, 8s, 16s)
+- **Fallback**: HTTP API used if WebSocket unavailable
+- **Status Indicator**: Green/red dot shows connection status
+- **Optimistic Updates**: UI updates immediately, syncs in background
+
 ## Notes
 
 - Profile IDs are generated as `profile_{timestamp}_{random}`
 - All timestamps are ISO 8601 format
 - Profile data is stored in `data/profiles/` directory
 - The system automatically creates the data directory on first use
-- Real-time sync uses HTTP polling (can be upgraded to WebSocket)
+- **Real-time sync uses WebSocket (Socket.IO) with HTTP fallback**
+- Custom server required (uses `server.ts` instead of default Next.js server)
+- WebSocket runs on same port as HTTP server (default: 3000)
+
+## Running the Server
+
+```bash
+# Development (with auto-reload)
+npm run dev
+
+# Production
+npm run build
+npm start
+```
+
+The custom server runs on `http://localhost:3000` with WebSocket at `ws://localhost:3000/socket.io`.
 
 ## Future Enhancements
 
 Potential improvements:
-- WebSocket for true real-time sync
 - Profile templates
 - Import/export profiles
 - Component marketplace
 - Animation library
 - Multi-user support with authentication
 - Profile versioning and rollback
+- Collaborative editing with cursor awareness

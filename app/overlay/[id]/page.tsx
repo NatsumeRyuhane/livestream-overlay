@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { getProfile } from '@/lib/profileStorage';
 import OverlayRenderer from '@/components/OverlayRenderer';
-import { ProfileProvider } from '@/lib/profileContext';
+import ClientWrapper from './ClientWrapper';
 
 interface OverlayPageProps {
   params: {
@@ -17,8 +17,8 @@ export default async function OverlayPage({ params }: OverlayPageProps) {
   }
 
   return (
-    <ProfileProvider profileId={params.id} initialProfile={profile}>
+    <ClientWrapper profileId={params.id} initialProfile={profile}>
       <OverlayRenderer />
-    </ProfileProvider>
+    </ClientWrapper>
   );
 }

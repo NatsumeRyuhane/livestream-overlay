@@ -7,10 +7,14 @@ It is designed to be used with OBS Studio, but can be used with any streaming so
 ## Features
 
 - **Multiple Profiles**: Create unlimited overlay profiles, each with unique URLs
-- **Real-time Sync**: Changes automatically sync between client and server
+- **WebSocket Real-time Sync**: True real-time synchronization across all clients using Socket.IO
+  - Changes broadcast instantly to all viewing instances
+  - Automatic reconnection with exponential backoff
+  - HTTP fallback for degraded connections
+  - Visual connection status indicator
 - **Component Library**: Reusable components shared across all profiles
 - **Dynamic Configuration**: JSON-based configuration for easy customization
-- **Modern Stack**: Built with React 18, Next.js 14, and TailwindCSS
+- **Modern Stack**: Built with React 18, Next.js 14, TailwindCSS, and Socket.IO
 
 ## Quick Start
 
@@ -49,9 +53,11 @@ See [ARCHITECTURE.md](./ARCHITECTURE.md) for detailed documentation on:
 
 - **React 18** - UI framework
 - **Next.js 14** - React framework with App Router
+- **Socket.IO** - WebSocket library for real-time communication
 - **TailwindCSS** - Utility-first CSS framework
 - **TypeScript** - Type safety
 - **File-based Storage** - JSON profile storage (easily replaceable with database)
+- **Custom Node.js Server** - Wraps Next.js to enable WebSocket support
 
 ## Project Structure
 

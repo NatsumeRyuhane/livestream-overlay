@@ -1,14 +1,16 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { PageProfile } from '@/types/profile';
+import { useSocket } from './socketContext';
 
 interface ProfileContextType {
   profile: PageProfile | null;
   loading: boolean;
   error: string | null;
-  updateConfig: (config: Partial<PageProfile['config']>) => Promise<void>;
-  syncToServer: () => Promise<void>;
+  isConnected: boolean;
+  updateConfig: (config: Partial<PageProfile['config']>) => void;
+  syncToServer: () => void;
 }
 
 const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
@@ -32,12 +34,85 @@ export function ProfileProvider({ profileId, initialProfile, children }: Profile
   const [loading, setLoading] = useState(!initialProfile);
   const [error, setError] = useState<string | null>(null);
 
+  const {
+    isConnected,
+    joinProfile,
+    leaveProfile,
+    updateConfig: socketUpdateConfig,
+    onConfigUpdated,
+    offConfigUpdated,
+    socket
+  } = useSocket();
+
   // Load profile on mount if not provided
   useEffect(() => {
     if (!initialProfile) {
       loadProfile();
     }
   }, [profileId]);
+
+  // Join profile room when socket connects
+  useEffect(() => {
+    if (isConnected && profileId) {
+      joinProfile(profileId);
+
+      return () => {
+        leaveProfile(profileId);
+      };
+    }
+  }, [isConnected, profileId, joinProfile, leaveProfile]);
+
+  // Listen for config updates from other clients
+  useEffect(() => {
+    const handleConfigUpdate = (data: { profileId: string; config: PageProfile['config'] }) => {
+      if (data.profileId === profileId && profile) {
+        console.log('Received config update from server:', data);
+        setProfile({
+          ...profile,
+          config: data.config,
+        });
+      }
+    };
+
+    onConfigUpdated(handleConfigUpdate);
+
+    return () => {
+      offConfigUpdated(handleConfigUpdate);
+    };
+  }, [profileId, profile, onConfigUpdated, offConfigUpdated]);
+
+  // Listen for update success/error
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleUpdateSuccess = (data: { profileId: string; config: PageProfile['config'] }) => {
+      if (data.profileId === profileId && profile) {
+        console.log('Config update successful:', data);
+        setProfile({
+          ...profile,
+          config: data.config,
+        });
+        setError(null);
+      }
+    };
+
+    const handleUpdateError = (data: { profileId: string; error: string }) => {
+      if (data.profileId === profileId) {
+        console.error('Config update error:', data.error);
+        setError(data.error);
+        // Reload profile from server
+        loadProfile();
+      }
+    };
+
+    socket.on('update-success', handleUpdateSuccess);
+    socket.on('update-error', handleUpdateError);
+
+    return () => {
+      socket.off('update-success', handleUpdateSuccess);
+      socket.off('update-error', handleUpdateError);
+    };
+  }, [socket, profileId, profile]);
 
   const loadProfile = async () => {
     try {
@@ -58,7 +133,7 @@ export function ProfileProvider({ profileId, initialProfile, children }: Profile
     }
   };
 
-  const updateConfig = async (config: Partial<PageProfile['config']>) => {
+  const updateConfig = useCallback((config: Partial<PageProfile['config']>) => {
     if (!profile) return;
 
     // Optimistic update
@@ -70,6 +145,17 @@ export function ProfileProvider({ profileId, initialProfile, children }: Profile
       },
     });
 
+    // Send update via WebSocket
+    if (isConnected) {
+      socketUpdateConfig(profileId, config);
+    } else {
+      // Fallback to HTTP if WebSocket not connected
+      console.warn('WebSocket not connected, falling back to HTTP');
+      updateConfigHTTP(config);
+    }
+  }, [profile, isConnected, profileId, socketUpdateConfig]);
+
+  const updateConfigHTTP = async (config: Partial<PageProfile['config']>) => {
     try {
       const response = await fetch(`/api/profiles/${profileId}/config`, {
         method: 'PATCH',
@@ -93,10 +179,10 @@ export function ProfileProvider({ profileId, initialProfile, children }: Profile
     }
   };
 
-  const syncToServer = async () => {
+  const syncToServer = useCallback(() => {
     if (!profile) return;
-    await updateConfig(profile.config);
-  };
+    updateConfig(profile.config);
+  }, [profile, updateConfig]);
 
   return (
     <ProfileContext.Provider
@@ -104,6 +190,7 @@ export function ProfileProvider({ profileId, initialProfile, children }: Profile
         profile,
         loading,
         error,
+        isConnected,
         updateConfig,
         syncToServer,
       }}
